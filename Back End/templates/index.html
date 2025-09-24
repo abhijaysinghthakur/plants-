@@ -1,24 +1,242 @@
-<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI-powered plant disease detection and diagnosis tool. Upload plant images to identify diseases and get treatment recommendations.">
+    <meta name="keywords" content="plant disease, AI detection, agriculture, plant health, disease diagnosis">
+    <meta name="author" content="Plant Health AI">
     
-    <title>Plant disease prediction!!</title>
+    <title>🌱 Plant Health AI - Disease Detection & Diagnosis</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Open Graph meta tags for social sharing -->
+    <meta property="og:title" content="Plant Health AI - Disease Detection">
+    <meta property="og:description" content="AI-powered plant disease detection tool">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.url }}">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1><i class="fas fa-seedling"></i> Plant Health AI</h1>
+            <p>Advanced AI-powered plant disease detection and diagnosis. Upload an image of your plant to get instant analysis and treatment recommendations.</p>
+        </header>
 
-  </head>
-<center>
-  <body class="text-center">
-    <form class="form-upload" action="predict" method="POST" enctype="multipart/form-data">
-      <h2 class="h3 mb-3 font-weight-normal">Please Upload the Image!!</h1>
-      <input type="file" name="img" class="form-control" required autofocus>
-      <button class="btn btn-lg btn-primary btn-block" type="submit">Predict</button><br><br>
-      {% if image_loc %}
-      <img class="mb-4" src="static/{{image_loc}}" alt="" width="300" height="300">
-      <h2 class="h3 mb-3 font-weight-normal">Prediction is : {{data}}</h3>
-      {%endif%}
-      
-    </form>
-  </body>
-</center>
+        <!-- Main Application Card -->
+        <main class="main-card">
+            <div class="card-header">
+                <h2><i class="fas fa-microscope"></i> Plant Disease Analyzer</h2>
+                <p>Get accurate disease identification with our trained AI model</p>
+            </div>
+            
+            <div class="card-body">
+                <!-- Upload Section -->
+                <section class="upload-section">
+                    <form id="predictForm" action="{{ url_for('predict') }}" method="POST" enctype="multipart/form-data">
+                        <div class="upload-area" id="uploadArea">
+                            <div class="upload-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <div class="upload-text">
+                                <h3>Upload Plant Image</h3>
+                                <p>Drag and drop your image here, or click to browse</p>
+                                <p><small>Supports JPG, PNG, GIF up to 10MB</small></p>
+                            </div>
+                            <input type="file" id="fileInput" name="img" class="file-input" accept="image/*" required>
+                            <button type="button" class="browse-btn">
+                                <i class="fas fa-folder-open"></i> Browse Files
+                            </button>
+                        </div>
+                        
+                        <!-- Image Preview -->
+                        <div class="image-preview" id="imagePreview">
+                            <div class="preview-container">
+                                <img id="previewImage" class="preview-image" alt="Preview">
+                                <button type="button" class="remove-image" id="removeImage" title="Remove image">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <p><strong>Ready for analysis!</strong> Click the button below to detect diseases.</p>
+                        </div>
+                        
+                        <!-- Progress Bar -->
+                        <div class="progress-container" style="display: none;">
+                            <div class="progress-bar"></div>
+                        </div>
+                        
+                        <!-- Predict Button -->
+                        <button type="submit" class="predict-btn" id="predictBtn" disabled>
+                            <i class="fas fa-search"></i> Analyze Plant Health
+                        </button>
+                    </form>
+                </section>
+
+                <!-- Loading Animation -->
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p class="loading-text">
+                        <i class="fas fa-brain"></i> AI is analyzing your plant image...
+                    </p>
+                    <p><small>This may take a few moments</small></p>
+                </div>
+
+                <!-- Results Section -->
+                <section class="results-section" id="resultsSection" {% if not data or data == "Hey there!!" %}style="display: none;"{% endif %}>
+                    <div class="results-header">
+                        <h3><i class="fas fa-clipboard-check"></i> Analysis Results</h3>
+                        {% if image_loc %}
+                        <div class="analyzed-image">
+                            <img src="{{ url_for('static', filename=image_loc) }}" alt="Analyzed plant" class="preview-image">
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="prediction-result">
+                        <div class="disease-name" id="diseaseName">
+                            {% if data and data != "Hey there!!" %}
+                                {{ data.replace('___', ' - ').replace('_', ' ').title() }}
+                            {% else %}
+                                Analysis Complete
+                            {% endif %}
+                        </div>
+                        <div class="confidence-score" id="confidenceScore">
+                            <!-- Confidence score will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Disease Information -->
+                    <div class="disease-info">
+                        <h4><i class="fas fa-info-circle"></i> Disease Information</h4>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <h5><i class="fas fa-file-alt"></i> Description</h5>
+                                <p id="diseaseDescription">
+                                    Complete analysis available. This tool helps identify plant diseases using advanced machine learning algorithms trained on thousands of plant images.
+                                </p>
+                            </div>
+                            
+                            <div class="info-item">
+                                <h5><i class="fas fa-exclamation-triangle"></i> Common Symptoms</h5>
+                                <ul id="diseaseSymptoms">
+                                    <li>Visual inspection of plant condition completed</li>
+                                    <li>Check for any unusual discoloration or patterns</li>
+                                    <li>Monitor plant health regularly</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="info-item">
+                                <h5><i class="fas fa-medkit"></i> Treatment Options</h5>
+                                <ul id="diseaseTreatment">
+                                    <li>Consult with a plant pathologist for specific treatment</li>
+                                    <li>Follow integrated pest management practices</li>
+                                    <li>Apply appropriate organic or chemical treatments as needed</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="info-item">
+                                <h5><i class="fas fa-shield-alt"></i> Prevention Tips</h5>
+                                <ul id="diseasePrevention">
+                                    <li>Maintain proper plant hygiene</li>
+                                    <li>Ensure adequate spacing and air circulation</li>
+                                    <li>Regular monitoring and early detection</li>
+                                    <li>Use disease-resistant plant varieties when possible</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        <button type="button" class="action-btn btn-primary" onclick="document.getElementById('fileInput').click()">
+                            <i class="fas fa-upload"></i> Analyze Another Plant
+                        </button>
+                        <button type="button" class="action-btn btn-secondary" onclick="window.print()">
+                            <i class="fas fa-print"></i> Print Results
+                        </button>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- Information Cards -->
+        <section class="info-cards" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin: 40px 0;">
+            <div class="main-card">
+                <div class="card-body" style="text-align: center; padding: 30px;">
+                    <div style="font-size: 3rem; color: var(--secondary-color); margin-bottom: 20px;">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <h3 style="color: var(--primary-color); margin-bottom: 15px;">38+ Plant Diseases</h3>
+                    <p style="color: var(--text-secondary);">Our AI model can identify diseases across multiple plant species including apples, tomatoes, corn, grapes, and more.</p>
+                </div>
+            </div>
+            
+            <div class="main-card">
+                <div class="card-body" style="text-align: center; padding: 30px;">
+                    <div style="font-size: 3rem; color: var(--secondary-color); margin-bottom: 20px;">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3 style="color: var(--primary-color); margin-bottom: 15px;">AI-Powered Analysis</h3>
+                    <p style="color: var(--text-secondary);">Advanced machine learning model trained on thousands of plant images for accurate disease detection.</p>
+                </div>
+            </div>
+            
+            <div class="main-card">
+                <div class="card-body" style="text-align: center; padding: 30px;">
+                    <div style="font-size: 3rem; color: var(--secondary-color); margin-bottom: 20px;">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3 style="color: var(--primary-color); margin-bottom: 15px;">Mobile Friendly</h3>
+                    <p style="color: var(--text-secondary);">Take photos directly with your phone or upload existing images for instant analysis anywhere.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p><strong>Plant Health AI</strong> - Empowering farmers and gardeners with AI-driven plant disease detection</p>
+            <p><small>For educational and informational purposes. Always consult with agricultural experts for professional advice.</small></p>
+            <div class="footer-links">
+                <a href="#"><i class="fas fa-question-circle"></i> Help</a>
+                <a href="#"><i class="fas fa-info-circle"></i> About</a>
+                <a href="#"><i class="fas fa-envelope"></i> Contact</a>
+                <a href="#"><i class="fas fa-shield-alt"></i> Privacy</a>
+            </div>
+        </footer>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    
+    <!-- Enhanced results display for server-side predictions -->
+    {% if data and data != "Hey there!!" %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show results section
+            const resultsSection = document.getElementById('resultsSection');
+            if (resultsSection) {
+                resultsSection.style.display = 'block';
+                
+                // Update disease information based on the prediction
+                const prediction = "{{ data }}";
+                if (window.PlantDiseaseApp && window.PlantDiseaseApp.showResults) {
+                    // Use the prediction data to populate detailed information
+                    setTimeout(() => {
+                        window.PlantDiseaseApp.updateDiseaseInfo && window.PlantDiseaseApp.updateDiseaseInfo(prediction);
+                    }, 100);
+                }
+            }
+        });
+    </script>
+    {% endif %}
+</body>
 </html>
