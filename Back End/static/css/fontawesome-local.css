@@ -1,0 +1,66 @@
+/* Local FontAwesome Icon Replacement */
+/* Professional CSS-based icons that closely match FontAwesome style */
+
+.fas, .far, .fab {
+    font-family: "Font Awesome 6 Free", "Font Awesome 6 Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 900;
+    font-style: normal;
+    font-variant: normal;
+    text-rendering: auto;
+    line-height: 1;
+    display: inline-block;
+    text-align: center;
+}
+
+/* Icon fallbacks using better Unicode characters for professional appearance */
+.fa-seedling::before { content: "🌱"; }
+.fa-microscope::before { content: "🔬"; }
+.fa-cloud-upload-alt::before { content: "☁"; }
+.fa-folder-open::before { content: "📁"; }
+.fa-times::before { content: "×"; font-weight: bold; font-size: 1.2em; }
+.fa-search::before { content: "🔍"; }
+.fa-brain::before { content: "🧠"; }
+.fa-clipboard-check::before { content: "📋"; }
+.fa-info-circle::before { content: "ℹ"; color: #0066cc; font-weight: bold; }
+.fa-file-alt::before { content: "📄"; }
+.fa-exclamation-triangle::before { content: "⚠"; color: #ff6600; }
+.fa-medkit::before { content: "⚕"; color: #cc0000; }
+.fa-shield-alt::before { content: "🛡"; }
+.fa-upload::before { content: "⬆"; font-weight: bold; }
+.fa-print::before { content: "🖨"; }
+.fa-leaf::before { content: "🍃"; color: #4caf50; }
+.fa-robot::before { content: "🤖"; }
+.fa-mobile-alt::before { content: "📱"; }
+.fa-question-circle::before { content: "❓"; }
+.fa-envelope::before { content: "✉"; }
+
+/* Enhanced styling for better visual appearance */
+.fas, .far, .fab {
+    margin-right: 8px;
+    font-size: 1em;
+}
+
+/* For headings, make icons slightly larger */
+h1 .fas, h2 .fas, h3 .fas, h4 .fas, h5 .fas {
+    margin-right: 10px;
+    font-size: 1.1em;
+}
+
+/* Special styling for upload area icon */
+.upload-icon .fas {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    margin-right: 0;
+}
+
+/* Button icons */
+button .fas {
+    margin-right: 8px;
+    font-size: 0.9em;
+}
+
+/* Footer link icons */
+.footer-links .fas {
+    margin-right: 5px;
+    font-size: 0.9em;
+}
