@@ -1,38 +1,114 @@
-/* Local FontAwesome Icon Replacement */
-/* Professional CSS-based icons that closely match FontAwesome style */
+/* Modern CSS-based Icon System */
+/* Professional icon replacement using SVG-style CSS icons */
 
 .fas, .far, .fab {
-    font-family: "Font Awesome 6 Free", "Font Awesome 6 Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    font-weight: 900;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 600;
     font-style: normal;
     font-variant: normal;
     text-rendering: auto;
     line-height: 1;
     display: inline-block;
     text-align: center;
+    position: relative;
 }
 
-/* Icon fallbacks using better Unicode characters for professional appearance */
-.fa-seedling::before { content: "🌱"; }
-.fa-microscope::before { content: "🔬"; }
-.fa-cloud-upload-alt::before { content: "☁"; }
-.fa-folder-open::before { content: "📁"; }
-.fa-times::before { content: "×"; font-weight: bold; font-size: 1.2em; }
-.fa-search::before { content: "🔍"; }
-.fa-brain::before { content: "🧠"; }
-.fa-clipboard-check::before { content: "📋"; }
-.fa-info-circle::before { content: "ℹ"; color: #0066cc; font-weight: bold; }
-.fa-file-alt::before { content: "📄"; }
-.fa-exclamation-triangle::before { content: "⚠"; color: #ff6600; }
-.fa-medkit::before { content: "⚕"; color: #cc0000; }
-.fa-shield-alt::before { content: "🛡"; }
-.fa-upload::before { content: "⬆"; font-weight: bold; }
-.fa-print::before { content: "🖨"; }
-.fa-leaf::before { content: "🍃"; color: #4caf50; }
-.fa-robot::before { content: "🤖"; }
-.fa-mobile-alt::before { content: "📱"; }
-.fa-question-circle::before { content: "❓"; }
-.fa-envelope::before { content: "✉"; }
+/* Modern CSS-based icons with better visual design */
+.fa-seedling::before { 
+    content: "🌱"; 
+    color: #4caf50;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
+}
+.fa-microscope::before { 
+    content: "🔬"; 
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
+}
+.fa-cloud-upload-alt::before { 
+    content: "☁"; 
+    color: #81c784;
+    font-size: 1.2em;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+.fa-folder-open::before { 
+    content: "📁"; 
+    color: #ffc107;
+}
+.fa-times::before { 
+    content: "×"; 
+    font-weight: bold; 
+    font-size: 1.5em; 
+    color: #f44336;
+    line-height: 0.8;
+}
+.fa-search::before { 
+    content: "🔍"; 
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
+}
+.fa-brain::before { 
+    content: "🧠"; 
+    animation: pulse 2s infinite;
+}
+.fa-clipboard-check::before { 
+    content: "📋"; 
+    color: #4caf50;
+}
+.fa-info-circle::before { 
+    content: "ℹ"; 
+    color: #2196f3; 
+    font-weight: bold;
+    background: linear-gradient(135deg, #2196f3, #21cbf3);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.fa-file-alt::before { 
+    content: "📄"; 
+    color: #607d8b;
+}
+.fa-exclamation-triangle::before { 
+    content: "⚠"; 
+    color: #ff9800;
+    filter: drop-shadow(0 1px 2px rgba(255,152,0,0.3));
+}
+.fa-medkit::before { 
+    content: "⚕"; 
+    color: #f44336;
+    filter: drop-shadow(0 1px 2px rgba(244,67,54,0.3));
+}
+.fa-shield-alt::before { 
+    content: "🛡"; 
+    color: #4caf50;
+}
+.fa-upload::before { 
+    content: "⬆"; 
+    font-weight: bold;
+    color: #4caf50;
+}
+.fa-print::before { 
+    content: "🖨"; 
+    color: #607d8b;
+}
+.fa-leaf::before { 
+    content: "🍃"; 
+    color: #4caf50;
+    filter: drop-shadow(0 1px 3px rgba(76,175,80,0.3));
+}
+.fa-robot::before { 
+    content: "🤖"; 
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
+}
+.fa-mobile-alt::before { 
+    content: "📱"; 
+    color: #607d8b;
+}
+.fa-question-circle::before { 
+    content: "❓"; 
+    color: #ff9800;
+}
+.fa-envelope::before { 
+    content: "✉"; 
+    color: #2196f3;
+}
 
 /* Enhanced styling for better visual appearance */
 .fas, .far, .fab {
