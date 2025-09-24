@@ -7,11 +7,15 @@ from werkzeug.utils import secure_filename
 import uuid
 from datetime import datetime
 
-app = Flask(__name__)
+# Configure Flask with proper paths for Vercel deployment
+template_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
+static_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
+
+app = Flask(__name__, template_folder=template_dir, static_folder=static_dir)
 app.secret_key = 'plant_disease_prediction_secret_key_2024'
 
 # Configuration
-IMAGE_FOLDER = os.path.join(os.getcwd(), "static")
+IMAGE_FOLDER = static_dir
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB max file size
 

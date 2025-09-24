@@ -1,13 +1,25 @@
 # Plant Disease Prediction Utilities
 
-import numpy as np
 import os
-from PIL import Image
 import logging
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+try:
+    from PIL import Image
+    HAS_PIL = True
+except ImportError:
+    HAS_PIL = False
+    logger.warning("PIL not available, image processing will be limited")
+
+try:
+    import numpy as np
+    HAS_NUMPY = True
+except ImportError:
+    HAS_NUMPY = False
+    logger.warning("NumPy not available, using simplified prediction logic")
 
 def makePrediction(path):
     """
@@ -66,6 +78,13 @@ def makePrediction(path):
         if not os.path.exists(path):
             logger.error(f"Image file not found: {path}")
             return "Error: Image file not found"
+            
+        if not HAS_PIL:
+            logger.warning("PIL not available, returning mock result based on filename")
+            # Use filename-based prediction when PIL is not available
+            filename = os.path.basename(path)
+            filename_hash = abs(hash(filename))
+            return classes[filename_hash % len(classes)] if classes else "Tomato___healthy"
         
         # For demonstration purposes, we'll use a simplified prediction
         # In a real deployment, you would load and use the actual ML model
@@ -107,30 +126,45 @@ def mock_prediction(img, classes):
         # Simple heuristic based on image characteristics
         width, height = img.size
         
-        # Convert to numpy array for analysis
-        img_array = np.array(img)
-        
-        # Calculate some basic image statistics
-        mean_color = np.mean(img_array, axis=(0, 1))
-        std_color = np.std(img_array, axis=(0, 1))
-        
-        # Simple decision logic (this is just for demo purposes)
-        # In reality, you would use your trained ML model here
-        
-        # If image is very green (high green channel), likely healthy
-        if mean_color[1] > mean_color[0] * 1.2 and mean_color[1] > mean_color[2] * 1.2:
-            healthy_classes = [c for c in classes if 'healthy' in c.lower()]
-            if healthy_classes:
-                # Select based on simple hash for consistency
-                index = abs(hash(str(mean_color))) % len(healthy_classes)
-                return healthy_classes[index]
-        
-        # Otherwise, select a disease class
-        disease_classes = [c for c in classes if 'healthy' not in c.lower()]
-        if disease_classes:
-            # Use image statistics to select a disease class
-            index = abs(hash(str(mean_color) + str(std_color))) % len(disease_classes)
-            return disease_classes[index]
+        if HAS_NUMPY:
+            # Convert to numpy array for analysis
+            img_array = np.array(img)
+            
+            # Calculate some basic image statistics
+            mean_color = np.mean(img_array, axis=(0, 1))
+            std_color = np.std(img_array, axis=(0, 1))
+            
+            # If image is very green (high green channel), likely healthy
+            if mean_color[1] > mean_color[0] * 1.2 and mean_color[1] > mean_color[2] * 1.2:
+                healthy_classes = [c for c in classes if 'healthy' in c.lower()]
+                if healthy_classes:
+                    # Select based on simple hash for consistency
+                    index = abs(hash(str(mean_color))) % len(healthy_classes)
+                    return healthy_classes[index]
+            
+            # Otherwise, select a disease class
+            disease_classes = [c for c in classes if 'healthy' not in c.lower()]
+            if disease_classes:
+                # Use image statistics to select a disease class
+                index = abs(hash(str(mean_color) + str(std_color))) % len(disease_classes)
+                return disease_classes[index]
+        else:
+            # Simplified prediction without numpy
+            # Use basic image properties and filename hashing for consistent results
+            filename_hash = abs(hash(img.filename if hasattr(img, 'filename') else str(width * height)))
+            
+            # Simple heuristic: assume some probability of healthy vs diseased
+            if filename_hash % 4 == 0:  # 25% chance of healthy
+                healthy_classes = [c for c in classes if 'healthy' in c.lower()]
+                if healthy_classes:
+                    index = filename_hash % len(healthy_classes)
+                    return healthy_classes[index]
+            
+            # Otherwise return a disease class
+            disease_classes = [c for c in classes if 'healthy' not in c.lower()]
+            if disease_classes:
+                index = filename_hash % len(disease_classes)
+                return disease_classes[index]
         
         # Fallback
         return classes[0] if classes else "Unknown"
