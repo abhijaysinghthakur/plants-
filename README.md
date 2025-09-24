@@ -117,15 +117,22 @@ plants-/
 
 ### Backend
 - **Framework**: Flask 3.0+
-- **ML Library**: TensorFlow/Keras
-- **Image Processing**: PIL (Pillow)
-- **Model**: MobileNetV2-based transfer learning
+- **ML Library**: Mock prediction system (TensorFlow removed for Vercel compatibility)
+- **Image Processing**: PIL (Pillow) with fallback support
+- **Model**: Demonstration system with 38+ plant disease classes
+- **Deployment**: Vercel serverless functions
 
 ### Frontend
 - **Styling**: Custom CSS with CSS Grid & Flexbox
 - **JavaScript**: Vanilla JS with modern ES6+ features
 - **Icons**: Font Awesome 6
 - **Responsive**: Mobile-first design approach
+
+### Deployment Architecture
+- **Platform**: Vercel (serverless)
+- **Entry Point**: `api/index.py`
+- **Static Files**: Served via Vercel's CDN
+- **Dependencies**: Optimized for serverless deployment (no TensorFlow)
 
 ### Security Features
 - File type validation
@@ -163,11 +170,39 @@ The application can detect and provide information for:
 
 ### Local Development
 ```bash
+cd "Back End"
 python app.py
 ```
 
-### Production Deployment
-The application includes a `Procfile` for easy deployment to platforms like Heroku:
+### Vercel Deployment (Recommended)
+This application is optimized for Vercel deployment:
+
+1. **Connect to Vercel**
+   - Fork this repository
+   - Connect it to your Vercel account
+   - Vercel will automatically detect the configuration
+
+2. **Deploy**
+   ```bash
+   # Vercel CLI (optional)
+   vercel --prod
+   ```
+
+3. **Test Deployment**
+   ```bash
+   python test_deployment.py https://your-app.vercel.app
+   ```
+
+**Key Features for Vercel:**
+- ✅ Serverless architecture ready
+- ✅ Optimized dependencies (no TensorFlow)
+- ✅ Static file serving configured
+- ✅ Health check endpoints included
+
+### Other Platforms
+
+#### Heroku
+The application includes a `Procfile` for Heroku deployment:
 
 ```bash
 # For Heroku deployment
